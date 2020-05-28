@@ -76,6 +76,7 @@ public class ArticleServiceImpl implements ArticleService {
             jsonObject.put("uimg", userPictureDAO.findByIdAndState(article.getUser().getPid(), 1).getPath());
             jsonObject.put("likenum", likeDAO.countByAidAndState(article.getId(), 1));
             jsonObject.put("date", article.getDate());
+            jsonObject.put("num", article.getNum());
             jsonArray.add(jsonObject);
         }
         return jsonArray;
@@ -83,10 +84,13 @@ public class ArticleServiceImpl implements ArticleService {
 
     public JSONObject findArticleById(Long aid, Integer uid) {
         ArticleEntity articleEntity = articleDAO.findById(aid).get();
+        articleEntity.setNum(articleEntity.getNum() + 1);
+        articleDAO.save(articleEntity);
         UserEntity userEntity = userDAO.findById(articleEntity.getUser().getId()).get();
         JSONObject jsonObject = new JSONObject();
         jsonObject.put("aid", articleEntity.getId());
         jsonObject.put("title", articleEntity.getTitle());
+        jsonObject.put("num", articleEntity.getNum());
         jsonObject.put("aimg", articlePictureDAO.findByAid(articleEntity.getId()));
         jsonObject.put("content", articleEntity.getContent());
         jsonObject.put("likenum", likeDAO.countByAidAndState(articleEntity.getId(), 1));
@@ -289,6 +293,7 @@ public class ArticleServiceImpl implements ArticleService {
             jsonObject.put("uimg", userPictureDAO.findByIdAndState(article.getUser().getPid(), 1).getPath());
             jsonObject.put("likenum", likeDAO.countByAidAndState(article.getId(), 1));
             jsonObject.put("date", article.getDate());
+            jsonObject.put("num", article.getNum());
             jsonArray.add(jsonObject);
         }
         return jsonArray;
@@ -316,6 +321,7 @@ public class ArticleServiceImpl implements ArticleService {
             jsonObject.put("uimg", userPictureDAO.findByIdAndState(article.getUser().getPid(), 1).getPath());
             jsonObject.put("likenum", likeDAO.countByAidAndState(article.getId(), 1));
             jsonObject.put("date", article.getDate());
+            jsonObject.put("num", article.getNum());
             jsonArray.add(jsonObject);
         }
         return jsonArray;
