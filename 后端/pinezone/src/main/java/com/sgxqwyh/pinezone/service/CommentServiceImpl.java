@@ -49,7 +49,11 @@ public class CommentServiceImpl implements CommentService{
             list.add(p1);
             Predicate p2 = criteriaBuilder.equal(root.get("state"),1);
             list.add(p2);
-            return criteriaBuilder.and(list.toArray(new Predicate[0]));
+            Predicate[] p = new Predicate[list.size()];
+            query.where(criteriaBuilder.and(list.toArray(p)));
+            query.orderBy(criteriaBuilder.desc(root.get("date")));
+            return query.getRestriction();
+//            return criteriaBuilder.and(list.toArray(new Predicate[0]));
         };
         Page<CommentEntity> commentEntityPage = commentDAO.findAll(specification, pageable);
         List<CommentEntity> commentEntityList = commentEntityPage.getContent();
