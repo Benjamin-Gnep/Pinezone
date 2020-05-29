@@ -26,18 +26,14 @@ public interface ArticleDAO extends JpaRepository<ArticleEntity, Long>, JpaSpeci
     List<ArticleEntity> findByUser(UserEntity userEntity);
 
     //章权
-    @Query(value = "select date_format(date, '%Y-%m-%d') ,sum(num) from pinezone.article where date_format(date, '%Y-%m-%d') = date_format(date, '%Y-%m-%d') group by date_format(date, '%Y-%m-%d')", nativeQuery = true)
-    public List<Object[]> findNum();
+
 
     @Query(value = "SELECT cid,count(id) FROM pinezone.article group by cid", nativeQuery = true)
     public List<Object[]> findPro();
 
     @Query(value = "SELECT date_format(date, '%Y-%m-%d'),count(id) FROM pinezone.article group by date_format(date, '%Y-%m-%d');", nativeQuery = true)
     public List<Object[]> findAdd();
-
-    @Query(value = "SELECT uid,count(cid) FROM pinezone.article where date > date_sub(curdate(),interval 1 month) group by uid",nativeQuery = true)
-    public List<Object[]> findActivity();
-
+    
     @Query(value = "SELECT count(distinct uid)/(select count(id) from pinezone.user) FROM pinezone.article where date > date_sub(curdate(),interval 1 month) ",nativeQuery = true)
     public float findActive();
 
