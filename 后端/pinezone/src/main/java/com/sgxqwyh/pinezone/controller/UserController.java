@@ -39,7 +39,8 @@ public class UserController {
     private ReportDAO reportDAO;
     @Autowired
     private UserPictureDAO userPictureDAO;
-
+    @Autowired
+    private ReadRecordDAO readRecordDAO;
 
     //俊鹏
     /*@GetMapping(value = "/girls/{id}")
@@ -97,9 +98,7 @@ public class UserController {
     public boolean login(UserEntity userEntity){
         return userServiceImpl.userLogin(userEntity);
     }
-    /**
-     * 根据号码返回用户
-     */
+
     @GetMapping("/loginByPhone/{phone}")
     public UserEntity loginByPhone(UserEntity userEntity){
         return userServiceImpl.userLoginByPhone(userEntity);
@@ -259,7 +258,9 @@ public class UserController {
     //根据用户id查询历史评论（无论删除与否）
     @GetMapping(value = "/user/comments")
     public List<CommentEntity> getComments(@RequestParam(value = "uid") Integer Uid) {
-        return commentDAO.findByUid(Uid);
+        List<CommentEntity> commentEntities = commentDAO.findByUid(Uid);
+        Collections.sort(commentEntities);
+        return commentEntities;
     }
 
     // 根据用户id查询关注表
@@ -318,4 +319,11 @@ public class UserController {
         return userPictureDAO.findByIdAndState(Pid,1);
     }
 
+    //根据用户id查询历史阅读记录
+    @GetMapping(value = "/user/readRecord")
+    public List<ReadRecordEntity> getReadRecord(@RequestParam(value = "uid") Integer Uid) {
+        List<ReadRecordEntity> readRecordEntities = readRecordDAO.findByUid(Uid);
+        Collections.sort(readRecordEntities);
+        return readRecordEntities;
+    }
 }
