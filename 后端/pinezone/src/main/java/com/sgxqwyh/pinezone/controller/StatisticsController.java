@@ -70,6 +70,7 @@ public class StatisticsController {
                 jsonArray.add(jsonObject);
             }
             if (end.equals(start)) {
+//                System.out.println("阅读量结束");
                 break;
             } else {
                 Calendar calendar = new GregorianCalendar();

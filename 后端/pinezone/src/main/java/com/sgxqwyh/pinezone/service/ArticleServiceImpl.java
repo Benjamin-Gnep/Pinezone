@@ -44,6 +44,8 @@ public class ArticleServiceImpl implements ArticleService {
     private CollectionDAO collectionDAO;
     @Autowired
     private ReadRecordDAO readRecordDAO;
+    @Autowired
+    private UserRoleDAO userRoleDAO;
 
     @Value("${articlePicturePath}")
     private String articlePicturePath;
@@ -91,15 +93,18 @@ public class ArticleServiceImpl implements ArticleService {
     public JSONObject findArticleById(Long aid, Integer uid) {
         ArticleEntity articleEntity = articleDAO.findById(aid).get();
         // 阅读量
-        articleEntity.setNum(articleEntity.getNum() + 1);
-        articleDAO.save(articleEntity);
-        ReadRecordEntity readRecordEntity = new ReadRecordEntity();
-        readRecordEntity.setUid(uid);
-        readRecordEntity.setAid(aid);
-        readRecordEntity.setState(1);
-        Timestamp timestamp = new Timestamp(System.currentTimeMillis());
-        readRecordEntity.setDate(timestamp);
-        readRecordDAO.save(readRecordEntity);
+        int roleId = userRoleDAO.findByUserId(uid).getRoleId();
+        if (roleId == 1) {
+            articleEntity.setNum(articleEntity.getNum() + 1);
+            articleDAO.save(articleEntity);
+            ReadRecordEntity readRecordEntity = new ReadRecordEntity();
+            readRecordEntity.setUid(uid);
+            readRecordEntity.setAid(aid);
+            readRecordEntity.setState(1);
+            Timestamp timestamp = new Timestamp(System.currentTimeMillis());
+            readRecordEntity.setDate(timestamp);
+            readRecordDAO.save(readRecordEntity);
+        }
         // 返回值
         UserEntity userEntity = userDAO.findById(articleEntity.getUser().getId()).get();
         JSONObject jsonObject = new JSONObject();
