@@ -1,6 +1,5 @@
 package com.sgxqwyh.pinezone.controller;
 
-import ch.qos.logback.core.net.SyslogOutputStream;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.sgxqwyh.pinezone.dao.CommentDAO;
@@ -40,10 +39,15 @@ public class StatisticsController {
     }
 
     @GetMapping(value = "/statistics/articleReadNum")
-    public JSONArray getArticleReadNum() throws ParseException {
+    public JSONArray getArticleReadNum(@RequestParam("start") String start, @RequestParam("end") String end) throws ParseException {
+        DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        Date startDate = dateFormat.parse(start);
+        Date endDate = dateFormat.parse(end);
+        start = dateFormat.format(startDate);
+        end = dateFormat.format(endDate);
+
         List<ReadRecordEntity> readRecordEntityList = readRecordDAO.findAll();
         HashMap<String, Integer> hashMap = new HashMap<>();
-        String start = readRecordEntityList.get(0).getDay();
         for (ReadRecordEntity readRecordEntity : readRecordEntityList) {
             String date = readRecordEntity.getDay();
             if (hashMap.containsKey(date)) {
@@ -52,9 +56,7 @@ public class StatisticsController {
                 hashMap.put(date, 1);
             }
         }
-        DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-        Date startDate = dateFormat.parse(start);
-        Date today = new Date();
+
         JSONArray jsonArray = new JSONArray();
         while (true) {
             JSONObject jsonObject = new JSONObject();
@@ -67,8 +69,7 @@ public class StatisticsController {
                 jsonObject.put("num", 0);
                 jsonArray.add(jsonObject);
             }
-            String todayString = dateFormat.format(today);
-            if (todayString.equals(start)) {
+            if (end.equals(start)) {
                 break;
             } else {
                 Calendar calendar = new GregorianCalendar();
@@ -76,7 +77,6 @@ public class StatisticsController {
                 calendar.add(calendar.DATE,1); //把日期往后增加一天,整数往后推,负数往前移动
                 startDate = calendar.getTime(); //这个时间就是日期往后推一天的结果
                 start = dateFormat.format(startDate);
-                //System.out.println(start);
             }
         }
         return jsonArray;
