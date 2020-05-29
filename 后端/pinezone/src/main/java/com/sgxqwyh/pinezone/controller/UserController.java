@@ -97,7 +97,9 @@ public class UserController {
     public boolean login(UserEntity userEntity){
         return userServiceImpl.userLogin(userEntity);
     }
-
+    /**
+     * 根据号码返回用户
+     */
     @GetMapping("/loginByPhone/{phone}")
     public UserEntity loginByPhone(UserEntity userEntity){
         return userServiceImpl.userLoginByPhone(userEntity);
