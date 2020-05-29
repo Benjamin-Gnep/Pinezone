@@ -6,7 +6,7 @@ import java.util.Objects;
 
 @Entity
 @Table(name = "comment", schema = "", catalog = "pinezone")
-public class CommentEntity {
+public class CommentEntity implements Comparable<CommentEntity>{
     private long id;
     private int uid;
     private long aid;
@@ -91,5 +91,26 @@ public class CommentEntity {
     @Override
     public int hashCode() {
         return Objects.hash(id, uid, aid, content, date, state);
+    }
+
+    @Override
+    public int compareTo(CommentEntity c) {
+        int i ;
+        if(this.date.getTime()>c.date.getTime()) {
+            i = 1;
+        }
+        else if(this.date.getTime()<c.date.getTime()) {
+            i = -1;
+        }
+        else {
+            i = 0;
+        }
+        if(i == 0) {
+            if (c.id > this.id)
+                i = 1;
+            else
+                i = -1;
+        }
+        return -i;
     }
 }
