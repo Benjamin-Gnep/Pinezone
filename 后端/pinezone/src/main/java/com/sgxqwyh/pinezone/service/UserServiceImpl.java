@@ -237,4 +237,32 @@ public class UserServiceImpl implements UserService {
             return false;
         }
     }
+    /**
+     * admin 登录，如果是admin并且密码正确返回1，如果错误返回0；如果不是admin返回-1;
+     * @param userEntity
+     * @param
+     * @return
+     */
+    public int userLoginByAdmin(UserEntity userEntity){
+        UserEntity adminUser= userDao.findByName(userEntity.getName());
+        if(adminUser==null){
+            return -1;
+        }
+        int loginId=adminUser.getId();
+        if(userRoleDao.findByUserId(loginId).getRoleId()==2){
+            ///UserEntity loginUser =userDao.findByNameAndPassword(userEntity.getName(),userEntity.getPassword());
+            if (("6666,"+adminUser.getPassword()).equals(userEntity.getPassword())){
+                return 1;
+            }
+            else{
+                /*System.out.println();
+                System.out.println("用户输入"+userEntity.getPassword());
+                System.out.println("数据库"+adminUser.getPassword());*/
+                return 0;
+            }
+        }
+        else{
+            return -1;
+        }
+    }
 }
