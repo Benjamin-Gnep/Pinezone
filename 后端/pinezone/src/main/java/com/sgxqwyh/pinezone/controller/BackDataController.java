@@ -23,18 +23,7 @@ public class BackDataController {
     private UserDAO userDAO;
 
     //章权
-    @GetMapping(value = "/v1/statistics/articles/reading-quantity")
-    public JSONArray readNum(){
-        List<Object[]> list = articleDAO.findNum();
-        JSONArray jsonArray = new JSONArray();
-        for (Object[] object : list) {
-            JSONObject jsonObject = new JSONObject();
-            jsonObject.put("date", object[0]);
-            jsonObject.put("num", object[1]);
-            jsonArray.add(jsonObject);
-        }
-        return jsonArray;
-    }
+
 
     @GetMapping(value = "/v1/statistics/articles/proportion")
     public JSONArray readPro(){
@@ -70,19 +59,6 @@ public class BackDataController {
             JSONObject jsonObject = new JSONObject();
             jsonObject.put("aid", object[0]);
             jsonObject.put("num", object[1]);
-            jsonArray.add(jsonObject);
-        }
-        return jsonArray;
-    }
-
-    @GetMapping(value = "/v1/statistics/articles/activity")
-    public JSONArray readActivity(){
-        List<Object[]> list = articleDAO.findActivity();
-        JSONArray jsonArray = new JSONArray();
-        for (Object[] object : list) {
-            JSONObject jsonObject = new JSONObject();
-            jsonObject.put("uid", object[0]);
-            jsonObject.put("active", object[1]);
             jsonArray.add(jsonObject);
         }
         return jsonArray;

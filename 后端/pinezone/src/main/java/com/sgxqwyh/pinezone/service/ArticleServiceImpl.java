@@ -14,11 +14,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.persistence.criteria.Predicate;
-import javax.servlet.ServletContext;
 import java.io.File;
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
-import java.net.URLDecoder;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -44,6 +41,8 @@ public class ArticleServiceImpl implements ArticleService {
     private CollectionDAO collectionDAO;
     @Autowired
     private ReadRecordDAO readRecordDAO;
+    @Autowired
+    private UserRoleDAO userRoleDAO;
 
     @Value("${articlePicturePath}")
     private String articlePicturePath;
@@ -64,9 +63,8 @@ public class ArticleServiceImpl implements ArticleService {
             list.add(p2);
             Predicate[] p = new Predicate[list.size()];
             query.where(criteriaBuilder.and(list.toArray(p)));
-            query.orderBy(criteriaBuilder.desc(root.get("date")));
+            query.orderBy(criteriaBuilder.desc(root.get("num")));
             return query.getRestriction();
-//            return criteriaBuilder.and(list.toArray(new Predicate[0]));
         };
         Page<ArticleEntity> articleEntityPage = articleDAO.findAll(specification, pageable);
         //返回格式
@@ -91,15 +89,18 @@ public class ArticleServiceImpl implements ArticleService {
     public JSONObject findArticleById(Long aid, Integer uid) {
         ArticleEntity articleEntity = articleDAO.findById(aid).get();
         // 阅读量
-        articleEntity.setNum(articleEntity.getNum() + 1);
-        articleDAO.save(articleEntity);
-        ReadRecordEntity readRecordEntity = new ReadRecordEntity();
-        readRecordEntity.setUid(uid);
-        readRecordEntity.setAid(aid);
-        readRecordEntity.setState(1);
-        Timestamp timestamp = new Timestamp(System.currentTimeMillis());
-        readRecordEntity.setDate(timestamp);
-        readRecordDAO.save(readRecordEntity);
+        int roleId = userRoleDAO.findByUserId(uid).getRoleId();
+        if (roleId == 1) {  // 若为普通用户发起的请求，则增加阅读量
+            articleEntity.setNum(articleEntity.getNum() + 1);
+            articleDAO.save(articleEntity);
+            ReadRecordEntity readRecordEntity = new ReadRecordEntity();
+            readRecordEntity.setUid(uid);
+            readRecordEntity.setAid(aid);
+            readRecordEntity.setState(1);
+            Timestamp timestamp = new Timestamp(System.currentTimeMillis());
+            readRecordEntity.setDate(timestamp);
+            readRecordDAO.save(readRecordEntity);
+        }
         // 返回值
         UserEntity userEntity = userDAO.findById(articleEntity.getUser().getId()).get();
         JSONObject jsonObject = new JSONObject();
@@ -261,27 +262,6 @@ public class ArticleServiceImpl implements ArticleService {
     }
 
     public JSONArray findArticleByUser(Integer uid, Integer currentPage, Integer pageSiz) {
-//        UserEntity userEntity = userDAO.findById(uid).get();
-//        List<ArticleEntity> articleEntityList = articleDAO.findByUser(userEntity);
-//        JSONArray jsonArray = new JSONArray();
-//        for (ArticleEntity articleEntity : articleEntityList) {
-//            JSONObject jsonObject = new JSONObject();
-//            jsonObject.put("aid", articleEntity.getId());
-//            jsonObject.put("title", articleEntity.getTitle());
-//            jsonObject.put("aimg", articlePictureDAO.findByAid(articleEntity.getId()));
-//            jsonObject.put("content", articleEntity.getContent());
-//            jsonObject.put("likenum", likeDAO.countByAid(articleEntity.getId()));
-//            jsonObject.put("commentnum", commentDAO.countByAidAndState(articleEntity.getId(), 1));
-//            jsonObject.put("starnum", collectionDAO.countByAidAndState(articleEntity.getId(), 1));
-//            jsonObject.put("describe", "福州大学在读生");
-//            jsonObject.put("islike", likeDAO.findByUidAndAidAndState(uid, articleEntity.getId(), 1)!=null?1:0);
-//            jsonObject.put("datetime", dealDateFormat(articleEntity.getDate()));
-//            jsonObject.put("uid", articleEntity.getUser().getId());
-//            jsonObject.put("username", articleEntity.getUser().getName());
-//            jsonObject.put("uimg", userPictureDAO.findByIdAndState(articleEntity.getUser().getPid(), 1).getPath());
-//            jsonArray.add(jsonObject);
-//        }
-//        return jsonArray;
         //分页查询
         UserEntity userEntity = userDAO.findById(uid).get();
         int pageSize = pageSiz;
