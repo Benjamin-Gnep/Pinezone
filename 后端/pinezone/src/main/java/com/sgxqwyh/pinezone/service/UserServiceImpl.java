@@ -64,7 +64,8 @@ public class UserServiceImpl implements UserService {
      */
 
     public boolean userLogin(UserEntity userEntity) {
-        UserEntity loginUser = userDao.findByNameAndPassword(userEntity.getName(),userEntity.getPassword());
+        UserEntity loginUser =userDao.findByNameAndPassword(userEntity.getName(),userEntity.getPassword().substring(5));
+
         return loginUser==null?false:true;
     }
 
