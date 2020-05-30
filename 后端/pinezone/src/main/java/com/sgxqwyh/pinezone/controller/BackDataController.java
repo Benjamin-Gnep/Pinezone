@@ -119,5 +119,17 @@ public class BackDataController {
         }
         return jsonArray;
     }
+    @GetMapping(value = "/v1/statistics/articles/activity")
+    public JSONArray readActivity(){
+        List<Object[]> list = articleDAO.findActivity();
+        JSONArray jsonArray = new JSONArray();
+        for (Object[] object : list) {
+            JSONObject jsonObject = new JSONObject();
+            jsonObject.put("time", object[0]);
+            jsonObject.put("num", object[1]);
+            jsonArray.add(jsonObject);
+        }
+        return jsonArray;
+    }
 
 }
