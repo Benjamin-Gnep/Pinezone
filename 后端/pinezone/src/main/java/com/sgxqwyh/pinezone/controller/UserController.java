@@ -167,18 +167,6 @@ public class UserController {
         return userServiceImpl.followerFind(userEntity);
     }
 
-    /**
-     * 管理员登录
-     * @param name
-     * @param password
-     * @param userEntity
-     * @return
-     */
-    @GetMapping("/loginByAdmin")
-    public int loginByAdmin(@RequestParam("name") String name,@RequestParam("password") String password,
-                            UserEntity userEntity){
-        return userServiceImpl.userLoginByAdmin(userEntity);
-    }
 
 
     //鹏飞
@@ -338,5 +326,4 @@ public class UserController {
         Collections.sort(readRecordEntities);
         return readRecordEntities;
     }
-
 }

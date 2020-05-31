@@ -14,5 +14,4 @@ public interface UserService {
     boolean backPassword(UserEntity userEntity);
     boolean userUnfollow(FollowEntity followEntity,UserEntity userEntity);
     UserEntity userLoginByPhone(UserEntity userEntity);
-    public int userLoginByAdmin(UserEntity userEntity);
 }

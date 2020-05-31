@@ -8,7 +8,6 @@ import com.sgxqwyh.pinezone.pojo.UserEntity;
 import com.sgxqwyh.pinezone.pojo.UserRoleEntity;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.util.DigestUtils;
 
 import java.sql.Timestamp;
 import java.util.Date;
@@ -55,8 +54,6 @@ public class UserServiceImpl implements UserService {
         //userEntity1.setState(1);
         //userEntity1.setProfile(userDao.findById(userEntity.getId()).get().getProfile());
         userEntity.setDate(new Timestamp(System.currentTimeMillis()));
-        String md5Password = DigestUtils.md5DigestAsHex(userEntity.getPassword().getBytes());//加密
-        userEntity.setPassword(md5Password);
         return userDao.save(userEntity);
     }
 
@@ -67,9 +64,7 @@ public class UserServiceImpl implements UserService {
      */
 
     public boolean userLogin(UserEntity userEntity) {
-        String md5Password = DigestUtils.md5DigestAsHex(userEntity.getPassword().substring(5).getBytes());
-        UserEntity loginUser =userDao.findByNameAndPassword(userEntity.getName(),md5Password);
-
+        UserEntity loginUser = userDao.findByNameAndPassword(userEntity.getName(),userEntity.getPassword());
         return loginUser==null?false:true;
     }
 
@@ -239,35 +234,6 @@ public class UserServiceImpl implements UserService {
         }
         else {
             return false;
-        }
-    }
-    /**
-     * admin 登录，如果是admin并且密码正确返回1，如果错误返回0；如果不是admin返回-1;
-     * @param userEntity
-     * @param
-     * @return
-     */
-    public int userLoginByAdmin(UserEntity userEntity){
-        UserEntity adminUser= userDao.findByName(userEntity.getName());
-        if(adminUser==null){
-            return -1;
-        }
-        int loginId=adminUser.getId();
-        if(userRoleDao.findByUserId(loginId).getRoleId()==2){
-            ///UserEntity loginUser =userDao.findByNameAndPassword(userEntity.getName(),userEntity.getPassword());
-            String md5Password=DigestUtils.md5DigestAsHex(userEntity.getPassword().substring(5).getBytes());
-            if ((adminUser.getPassword()).equals(md5Password)){
-                return 1;
-            }
-            else{
-                /*System.out.println();
-                System.out.println("用户输入"+userEntity.getPassword());
-                System.out.println("数据库"+adminUser.getPassword());*/
-                return 0;
-            }
-        }
-        else{
-            return -1;
         }
     }
 }
