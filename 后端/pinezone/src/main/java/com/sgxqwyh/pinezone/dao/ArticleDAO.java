@@ -43,11 +43,22 @@ public interface ArticleDAO extends JpaRepository<ArticleEntity, Long>, JpaSpeci
     @Query(value = "SELECT user.* FROM pinezone.article inner join pinezone.user on article.uid = user.id where article.date > date_sub(curdate(),interval 1 month)",nativeQuery = true)
     public List<Object[]> findActList();
 
-    @Query(value = "SELECT date_format(date,'%m-%d'),COUNT(read_record.id) FROM pinezone.read_record GROUP BY date_format(date,'%m-%d') ",nativeQuery = true)
+    @Query(value = "SELECT date_format(date,'%Y-%m-%d'),COUNT(read_record.id) FROM pinezone.read_record GROUP BY date_format(date,'%Y-%m-%d') ",nativeQuery = true)
     public List<Object[]> findDayRead();
-    @Query(value = "SELECT date_format(date,'%m-%d'),COUNT(article.id) FROM pinezone.article GROUP BY date_format(date,'%m-%d')  ",nativeQuery = true)
+
+    @Query(value = "SELECT date_format(date,'%Y-%m-%d'),COUNT(article.id) FROM pinezone.article GROUP BY date_format(date,'%Y-%m-%d')  ",nativeQuery = true)
     public List<Object[]> findDayArticle();
-    @Query(value = "SELECT date_format(date,'%m-%d'),COUNT(`comment`.id) FROM pinezone.`comment` GROUP BY date_format(date,'%m-%d')  ",nativeQuery = true)
+
+    @Query(value = "SELECT date_format(date,'%Y-%m-%d'),COUNT(`comment`.id) FROM pinezone.`comment` GROUP BY date_format(date,'%Y-%m-%d')  ",nativeQuery = true)
     public List<Object[]> findDayComment();
+
+    @Query(value = "SELECT date_format(date,'%H'),COUNT(read_record.id) FROM pinezone.read_record GROUP BY date_format(date,'%H') ",nativeQuery = true)
+    public List<Object[]> findHonrRead();
+
+    @Query(value = "SELECT date_format(date,'%H'),COUNT(article.id) FROM pinezone.article GROUP BY date_format(date,'%H')  ",nativeQuery = true)
+    public List<Object[]> findHonrArticle();
+
+    @Query(value = "SELECT date_format(date,'%H'),COUNT(`comment`.id) FROM pinezone.`comment` GROUP BY date_format(date,'%H')  ",nativeQuery = true)
+    public List<Object[]> findHonrComment();
 
 }

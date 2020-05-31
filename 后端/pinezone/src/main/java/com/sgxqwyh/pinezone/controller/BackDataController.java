@@ -120,16 +120,82 @@ public class BackDataController {
         return jsonArray;
     }
     @GetMapping(value = "/v1/statistics/articles/activity")
-    public JSONArray readActivity(){
-        List<Object[]> list = articleDAO.findActivity();
+    public JSONArray readActivity1(){
+        List<Object[]> list1 = articleDAO.findDayRead();
+        List<Object[]> list2 = articleDAO.findDayArticle();
+        List<Object[]> list3 = articleDAO.findDayComment();
+        HashMap<String, BigInteger> hashMap = new HashMap<>();
         JSONArray jsonArray = new JSONArray();
-        for (Object[] object : list) {
+        for (Object[] object: list1) {
+            hashMap.put((String)object[0], (BigInteger)object[1]);
+        }
+        for(Object[] object:list2){
+            if(hashMap.containsKey(object[0])){
+                hashMap.put((String)object[0], hashMap.get(object[0]).add((BigInteger)object[1]));
+            }
+            else{
+                hashMap.put((String)object[0],(BigInteger)object[1]);
+            }
+        }
+        for(Object[] object:list3){
+            if(hashMap.containsKey(object[0])){
+                hashMap.put((String)object[0],hashMap.get(object[0]).add((BigInteger)object[1]));
+            }
+            else{
+                hashMap.put((String)object[0],(BigInteger)object[1]);
+            }
+        }
+        Iterator<Map.Entry<String, BigInteger>> iterator = hashMap.entrySet().iterator();
+        while (iterator.hasNext()) {
+            Map.Entry<String, BigInteger> entry = iterator.next();
+            String key = entry.getKey();
+            BigInteger value = entry.getValue();
             JSONObject jsonObject = new JSONObject();
-            jsonObject.put("time", object[0]);
-            jsonObject.put("num", object[1]);
+            jsonObject.put("date", key);
+            jsonObject.put("activity", value);
             jsonArray.add(jsonObject);
         }
+
         return jsonArray;
     }
 
+    @GetMapping(value = "/v1/statistics/articles/active-period")
+    public JSONArray readActivity2(){
+        List<Object[]> list1 = articleDAO.findHonrRead();
+        List<Object[]> list2 = articleDAO.findHonrArticle();
+        List<Object[]> list3 = articleDAO.findHonrComment();
+        HashMap<String, BigInteger> hashMap = new HashMap<>();
+        JSONArray jsonArray = new JSONArray();
+        for (Object[] object: list1) {
+            hashMap.put((String)object[0],(BigInteger)object[1]);
+        }
+        for(Object[] object:list2){
+            if(hashMap.containsKey(object[0])){
+                hashMap.put((String)object[0],hashMap.get(object[0]).add((BigInteger)object[1]));
+            }
+            else{
+                hashMap.put((String)object[0],(BigInteger)object[1]);
+            }
+        }
+        for(Object[] object:list3){
+            if(hashMap.containsKey(object[0])){
+                hashMap.put((String)object[0],hashMap.get(object[0]).add((BigInteger)object[1]));
+            }
+            else{
+                hashMap.put((String)object[0],(BigInteger)object[1]);
+            }
+        }
+        Iterator<Map.Entry<String, BigInteger>> iterator = hashMap.entrySet().iterator();
+        while (iterator.hasNext()) {
+            Map.Entry<String, BigInteger> entry = iterator.next();
+            String key = entry.getKey();
+            BigInteger value = entry.getValue();
+            JSONObject jsonObject = new JSONObject();
+            jsonObject.put("period", key);
+            jsonObject.put("activity", value);
+            jsonArray.add(jsonObject);
+        }
+
+        return jsonArray;
+    }
 }
