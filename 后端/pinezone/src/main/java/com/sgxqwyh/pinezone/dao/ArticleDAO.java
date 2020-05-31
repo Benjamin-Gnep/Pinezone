@@ -19,6 +19,8 @@ public interface ArticleDAO extends JpaRepository<ArticleEntity, Long>, JpaSpeci
     //锦浩
     Page<ArticleEntity> findAll(Specification<ArticleEntity> specification, Pageable pageable);
 
+    List<ArticleEntity> findByTitleLikeOrContentLike(String s1, String s2);
+
     //鹏飞
     //根据类型返回文章列表
     List<ArticleEntity> findByCategory(CategoryEntity categoryEntity);

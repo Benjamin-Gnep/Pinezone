@@ -81,6 +81,11 @@ public class ArticleController {
         return articleService.findArticleByUserStar(uid, currentPage, pageSize);
     }
 
+    @GetMapping(value = "/findArticle")
+    public List<ArticleEntity> findArticleByContent(@RequestParam("str") String str) {
+        return articleService.findArticleByContent(str);
+    }
+
 
 
     //鹏飞

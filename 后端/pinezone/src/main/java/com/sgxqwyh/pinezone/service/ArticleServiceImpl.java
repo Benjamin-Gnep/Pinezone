@@ -326,6 +326,12 @@ public class ArticleServiceImpl implements ArticleService {
         return jsonArray;
     }
 
+    public List<ArticleEntity> findArticleByContent(String str) {
+        str = "%" + str + "%";
+        List<ArticleEntity> articleEntityList = articleDAO.findByTitleLikeOrContentLike(str, str);
+        return articleEntityList;
+    }
+
 
     public static String dealDateFormat(Timestamp timeStamp) {
         SimpleDateFormat sdf=new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
