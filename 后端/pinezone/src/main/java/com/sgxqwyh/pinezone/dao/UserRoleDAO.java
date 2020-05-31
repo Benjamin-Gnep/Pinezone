@@ -10,5 +10,7 @@ import java.util.List;
 public interface UserRoleDAO extends JpaRepository<UserRoleEntity,Integer>{
     //根据用户的角色获取用户角色列表
     public List<UserRoleEntity> findByRoleId(Integer RoleId);
+    //龚俊鹏
+    UserRoleEntity findByUserId(int id);
 }
 
