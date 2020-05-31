@@ -8,6 +8,7 @@ import com.sgxqwyh.pinezone.pojo.UserEntity;
 import com.sgxqwyh.pinezone.pojo.UserRoleEntity;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.DigestUtils;
 
 import java.sql.Timestamp;
 import java.util.Date;
@@ -54,6 +55,8 @@ public class UserServiceImpl implements UserService {
         //userEntity1.setState(1);
         //userEntity1.setProfile(userDao.findById(userEntity.getId()).get().getProfile());
         userEntity.setDate(new Timestamp(System.currentTimeMillis()));
+        String md5Password = DigestUtils.md5DigestAsHex(userEntity.getPassword().getBytes());//加密
+        userEntity.setPassword(md5Password);
         return userDao.save(userEntity);
     }
 
@@ -64,7 +67,8 @@ public class UserServiceImpl implements UserService {
      */
 
     public boolean userLogin(UserEntity userEntity) {
-        UserEntity loginUser =userDao.findByNameAndPassword(userEntity.getName(),userEntity.getPassword().substring(5));
+        String md5Password = DigestUtils.md5DigestAsHex(userEntity.getPassword().substring(5).getBytes());
+        UserEntity loginUser =userDao.findByNameAndPassword(userEntity.getName(),md5Password);
 
         return loginUser==null?false:true;
     }
@@ -251,7 +255,8 @@ public class UserServiceImpl implements UserService {
         int loginId=adminUser.getId();
         if(userRoleDao.findByUserId(loginId).getRoleId()==2){
             ///UserEntity loginUser =userDao.findByNameAndPassword(userEntity.getName(),userEntity.getPassword());
-            if (("6666,"+adminUser.getPassword()).equals(userEntity.getPassword())){
+            String md5Password=DigestUtils.md5DigestAsHex(userEntity.getPassword().substring(5).getBytes());
+            if ((adminUser.getPassword()).equals(md5Password)){
                 return 1;
             }
             else{
