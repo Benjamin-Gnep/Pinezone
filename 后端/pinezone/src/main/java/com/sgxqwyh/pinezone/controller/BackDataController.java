@@ -121,29 +121,34 @@ public class BackDataController {
     }
     @GetMapping(value = "/v1/statistics/articles/activity")
     public JSONArray readActivity1(){
+        Date t = new Date();
+        SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+        for (int i = 0; i < 30; i++) {
+
+
+            hashMap.put(df.format(new Date(d.getTime() - i * 24 * 60 * 60 * 1000)), 0);
+        }
         List<Object[]> list1 = articleDAO.findDayRead();
         List<Object[]> list2 = articleDAO.findDayArticle();
         List<Object[]> list3 = articleDAO.findDayComment();
         HashMap<String, BigInteger> hashMap = new HashMap<>();
         JSONArray jsonArray = new JSONArray();
         for (Object[] object: list1) {
-            hashMap.put((String)object[0], (BigInteger)object[1]);
+            if(hashMap.containsKey(object[0])) {
+                hashMap.put((String) object[0], (BigInteger) object[1]);
+            }
         }
         for(Object[] object:list2){
             if(hashMap.containsKey(object[0])){
                 hashMap.put((String)object[0], hashMap.get(object[0]).add((BigInteger)object[1]));
             }
-            else{
-                hashMap.put((String)object[0],(BigInteger)object[1]);
-            }
+
         }
         for(Object[] object:list3){
             if(hashMap.containsKey(object[0])){
                 hashMap.put((String)object[0],hashMap.get(object[0]).add((BigInteger)object[1]));
             }
-            else{
-                hashMap.put((String)object[0],(BigInteger)object[1]);
-            }
+
         }
         Iterator<Map.Entry<String, BigInteger>> iterator = hashMap.entrySet().iterator();
         while (iterator.hasNext()) {
@@ -166,6 +171,12 @@ public class BackDataController {
         List<Object[]> list3 = articleDAO.findHonrComment();
         HashMap<String, BigInteger> hashMap = new HashMap<>();
         JSONArray jsonArray = new JSONArray();
+        String time[] ={"00","01","02","03","04","05","06","07","08","09""10""11","12","13",
+                "14","15","16","17","18","19","21","22","23"}
+        for (int i = 0; i < 24; i++) {
+
+            hashMap.put(time[i], 0);
+        }
         for (Object[] object: list1) {
             hashMap.put((String)object[0],(BigInteger)object[1]);
         }
