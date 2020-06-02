@@ -17,5 +17,5 @@ public interface ArticleService {
     JSONObject updateArticle(Long aid, String title, String content, MultipartFile[] imgs);
     JSONArray findArticleByUser(Integer uid, Integer currentPage, Integer pageSiz);
     JSONArray findArticleByUserStar(Integer uid, Integer currentPage, Integer pageSiz);
-    List<ArticleEntity> findArticleByContent(String s1);
+    JSONArray findArticleByContent(String s1);
 }

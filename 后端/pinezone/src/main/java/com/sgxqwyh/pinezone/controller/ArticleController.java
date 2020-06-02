@@ -82,7 +82,7 @@ public class ArticleController {
     }
 
     @GetMapping(value = "/findArticle")
-    public List<ArticleEntity> findArticleByContent(@RequestParam("str") String str) {
+    public JSONArray findArticleByContent(@RequestParam("str") String str) {
         return articleService.findArticleByContent(str);
     }
 

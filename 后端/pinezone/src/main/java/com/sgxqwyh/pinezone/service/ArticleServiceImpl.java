@@ -326,10 +326,25 @@ public class ArticleServiceImpl implements ArticleService {
         return jsonArray;
     }
 
-    public List<ArticleEntity> findArticleByContent(String str) {
+    public JSONArray findArticleByContent(String str) {
         str = "%" + str + "%";
         List<ArticleEntity> articleEntityList = articleDAO.findByTitleLikeOrContentLike(str, str);
-        return articleEntityList;
+        JSONArray jsonArray = new JSONArray();
+        for (ArticleEntity article : articleEntityList) {
+            JSONObject jsonObject = new JSONObject();
+            jsonObject.put("aid", article.getId());
+            jsonObject.put("title", article.getTitle());
+            jsonObject.put("aimg", articlePictureDAO.findByAid(article.getId()));
+            jsonObject.put("uid", article.getUser().getId());
+            jsonObject.put("username", article.getUser().getName());
+            jsonObject.put("uimg", userPictureDAO.findByIdAndState(article.getUser().getPid(), 1).getPath());
+            jsonObject.put("likenum", likeDAO.countByAidAndState(article.getId(), 1));
+            jsonObject.put("date", article.getDate());
+            jsonObject.put("num", article.getNum());
+            jsonObject.put("content", article.getContent());
+            jsonArray.add(jsonObject);
+        }
+        return jsonArray;
     }
 
 
