@@ -29,6 +29,8 @@ public interface ArticleDAO extends JpaRepository<ArticleEntity, Long>, JpaSpeci
 
     //章权
 
+    @Query(value = "SELECT uid,count(cid) FROM pinezone.article where date > date_sub(curdate(),interval 1 month) group by uid",nativeQuery = true)
+    public List<Object[]> findActivity();
 
     @Query(value = "SELECT cid,count(id) FROM pinezone.article group by cid", nativeQuery = true)
     public List<Object[]> findPro();

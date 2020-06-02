@@ -119,6 +119,20 @@ public class BackDataController {
         }
         return jsonArray;
     }
+
+    @GetMapping(value = "/v1/statistics/articles/user-activity")
+    public JSONArray readActivity(){
+        List<Object[]> list = articleDAO.findActivity();
+        JSONArray jsonArray = new JSONArray();
+        for (Object[] object : list) {
+            JSONObject jsonObject = new JSONObject();
+            jsonObject.put("uid", object[0]);
+            jsonObject.put("active", object[1]);
+            jsonArray.add(jsonObject);
+        }
+        return jsonArray;
+    }
+
     @GetMapping(value = "/v1/statistics/articles/activity")
     public JSONArray readActivity1(){
         Date t = new Date();
@@ -131,7 +145,7 @@ public class BackDataController {
         List<Object[]> list1 = articleDAO.findDayRead();
         List<Object[]> list2 = articleDAO.findDayArticle();
         List<Object[]> list3 = articleDAO.findDayComment();
-        HashMap<String, BigInteger> hashMap = new HashMap<>();
+        HashMap<String, BigInteger> hashMap = new linkedHashMap<>();
         JSONArray jsonArray = new JSONArray();
         for (Object[] object: list1) {
             if(hashMap.containsKey(object[0])) {
@@ -169,7 +183,7 @@ public class BackDataController {
         List<Object[]> list1 = articleDAO.findHonrRead();
         List<Object[]> list2 = articleDAO.findHonrArticle();
         List<Object[]> list3 = articleDAO.findHonrComment();
-        HashMap<String, BigInteger> hashMap = new HashMap<>();
+        HashMap<String, BigInteger> hashMap = new linkedHashMap<>();
         JSONArray jsonArray = new JSONArray();
         String time[] ={"00","01","02","03","04","05","06","07","08","09""10""11","12","13",
                 "14","15","16","17","18","19","21","22","23"}
