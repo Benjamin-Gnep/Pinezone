@@ -67,4 +67,41 @@ public class SquirrelController {
         return squirrelDAO.save(squirrelEntity);
     }
 
+    @GetMapping(value = "/squirrel/travel")
+    public JSONObject travel(@RequestParam("hp") Integer hp, @RequestParam("achievement") Float achievement,
+                             @RequestParam("companion") Float companion) {
+        JSONObject jsonObject = new JSONObject();
+        List<PlaceEntity> placeEntityList = placeDAO.findAll();
+        int size = placeEntityList.size();
+        System.out.println(size);
+        int i = 0;
+        while(true) {
+            if (i >= size) {
+                i -= size;
+            }
+            if (hp <= placeEntityList.get(i).getTime()) {
+                jsonObject.put("place", placeEntityList.get(i).getName());
+                jsonObject.put("achievement", myRandom(achievement * placeEntityList.get(i).getAchievement()));
+                jsonObject.put("companion", myRandom(companion * placeEntityList.get(i).getCompanion()));
+                break;
+            } else {
+                hp -= placeEntityList.get(i).getTime();
+                i++;
+            }
+        }
+        return jsonObject;
+    }
+
+    public static long myRandom(double f) {
+        long p = Math.round(f * 100000);
+//        System.out.println(p);
+        Random random = new Random();
+        int r = random.nextInt(100000);
+//        System.out.println(r);
+        if (r < p) {
+            return 1;
+        } else {
+            return 0;
+        }
+    }
 }
